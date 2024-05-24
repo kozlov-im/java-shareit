@@ -19,12 +19,12 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item createItem(@Valid @RequestHeader("X-Sharer-User-Id") int userId, @Valid @RequestBody ItemDto itemDto) {
+    public Item createItem(@RequestHeader("X-Sharer-User-Id") int userId, @Valid @RequestBody ItemDto itemDto) {
         return itemService.createItem(userId, ItemMapper.toItem(itemDto));
     }
 
     @PatchMapping("/{itemId}")
-    public Item updateItem(@Valid @RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto,
+    public Item updateItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto,
                            @PathVariable int itemId) {
         return itemService.updateItem(userId, itemId, ItemMapper.toItem(itemDto));
     }
@@ -40,7 +40,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<Item> getItemsForUser(@Valid @RequestHeader("X-Sharer-User-Id") int userId) {
+    public Collection<Item> getItemsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
         return itemService.getItemsForUser(userId);
     }
 

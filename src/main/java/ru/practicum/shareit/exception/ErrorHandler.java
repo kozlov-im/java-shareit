@@ -11,53 +11,52 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleValidationException(final InternalServerErrorException e) {
-        return Map.of("error", e.getMessage());
+    public ErrorResponse handleValidationException(final InternalServerErrorException e) {
+        return new ErrorResponse("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleNotFoundException(final BadRequestException e) {
-        return Map.of("error", e.getMessage());
+    public ErrorResponse handleNotFoundException(final BadRequestException e) {
+        return new ErrorResponse("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFoundException1(final NotFoundException e) {
-        return Map.of("error", e.getMessage());
+    public ErrorResponse handleNotFoundException1(final NotFoundException e) {
+        return new ErrorResponse("error", e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> errorMessage = (List<String>) e.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
-        return Map.of("error", errorMessage.toString());
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public Map<String, String> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return Map.of("error", e.getMessage());
+        return new ErrorResponse("error", errorMessage.toString());
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public Map<String, String> handleMissingRequestHeaderException(MissingRequestHeaderException e) {
-        return Map.of("error", e.getMessage());
+    public ErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException e) {
+        return new ErrorResponse("error", e.getMessage());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorResponse handleThrowableException(Throwable e) {
+        return new ErrorResponse("error", e.getMessage());
     }
 
 }

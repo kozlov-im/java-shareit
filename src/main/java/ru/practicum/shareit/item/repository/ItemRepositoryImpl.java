@@ -32,7 +32,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (items.containsKey(userId)) {
             for (Item itemInArray : items.get(userId)) {
                 if (itemInArray.getId() == itemId) {
-                    if (String.valueOf(item.getName()) != "null") {
+                    if (String.valueOf(item.getName()) != "null") {  //при вызове item.getName() возвращается NullPointerException, как вариант можно добавить проверку на null в каждый геттер item
                         itemInArray.setName(item.getName());
                     }
                     if (String.valueOf(item.getDescription()) != "null") {
