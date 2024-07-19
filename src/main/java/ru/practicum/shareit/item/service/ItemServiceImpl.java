@@ -20,6 +20,7 @@ import java.util.Map;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+
     @Override
     public Item createItem(int userId, ItemDto itemDto) {
         Item item = ItemMapper.toItemModel(itemDto);

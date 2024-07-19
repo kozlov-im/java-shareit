@@ -4,6 +4,6 @@ public interface Marker {
     interface OnCreate {
     }
 
-    interface onUpdate {
+    interface OnUpdate {
     }
 }

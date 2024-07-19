@@ -11,6 +11,6 @@ import ru.practicum.shareit.exception.Marker;
 public class UserDto {
     private String name;
     @NotBlank(message = "email should not be blank", groups = {Marker.OnCreate.class})
-    @Email(message = "email incorrect", groups = {Marker.OnCreate.class, Marker.onUpdate.class})
+    @Email(message = "email incorrect", groups = {Marker.OnCreate.class, Marker.OnUpdate.class})
     private String email;
 }
