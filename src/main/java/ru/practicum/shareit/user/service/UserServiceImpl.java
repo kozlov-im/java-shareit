@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.InternalServerErrorException;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -17,8 +17,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public User saveUser(UserDto userDto) {
-        User user = UserMapper.toUserModel(userDto);
+    public User saveUser(UserCreateDto userCreateDto) {
+        User user = UserMapper.toUserModel(userCreateDto);
         for (User userInArray : userRepository.getAllUsers()) {
             if (userInArray.getEmail().equals(user.getEmail())) {
                 throw new InternalServerErrorException("email " + user.getEmail() + " already exist");
@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int userId, UserDto userDto) {
-        User user = UserMapper.toUserModel(userDto);
+    public User updateUser(int userId, UserCreateDto userCreateDto) {
+        User user = UserMapper.toUserModel(userCreateDto);
         if (String.valueOf(user.getName()) != "null") {
             userRepository.updateUserName(userId, user);
         }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemCreateDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -22,16 +22,16 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public Item createItem(int userId, ItemDto itemDto) {
-        Item item = ItemMapper.toItemModel(itemDto);
+    public Item createItem(int userId, ItemCreateDto itemCreateDto) {
+        Item item = ItemMapper.toItemModel(itemCreateDto);
         checkUserExist(userId);
         item.setOwner(userRepository.getUserById(userId));
         return itemRepository.createItem(userId, item);
     }
 
     @Override
-    public Item updateItem(int userId, int itemId, ItemDto itemDto) {
-        Item item = ItemMapper.toItemModel(itemDto);
+    public Item updateItem(int userId, int itemId, ItemCreateDto itemCreateDto) {
+        Item item = ItemMapper.toItemModel(itemCreateDto);
         checkUserExist(userId);
         Item itemExistForUpdate = checkItemForUserExist(userId, itemId);
         if (String.valueOf(item.getName()) != "null") {
