@@ -1,21 +1,20 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
-public interface ItemRepository {
-    Item createItem(int userId, Item item);
+public interface ItemRepository extends JpaRepository<Item, Integer> {
 
-    Item updateItem(int userId, int itemId, Item item);
 
-    Map<Integer, ArrayList<Item>> getAllItems();
+    @Query(value = "SELECT i FROM Item i WHERE i.id = ?1 AND i.owner.id = ?2")
+    Item getItemForUser(int itemId, int userId);
 
-    Item getItemById(int itemId);
-
+    @Query(value = "SELECT i FROM Item i WHERE i.owner.id = ?1")
     Collection<Item> getItemsForUser(int userId);
 
-    Collection<Item> searchItems(String text);
+    @Query(value = "SELECT i FROM Item i WHERE (LOWER(i.name) LIKE %?1% OR LOWER(i.description) LIKE %?1%) AND i.available = TRUE")
+    Collection<Item> findByNameOrDescription(String text);
 }
