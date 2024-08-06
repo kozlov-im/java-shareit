@@ -65,5 +65,12 @@ public class ErrorHandler {
         return new ErrorResponse("error", e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflictException(final ConflictException e) {
+        log.info("handleValidationException {}", e.getMessage());
+        return new ErrorResponse("error", e.getMessage());
+    }
+
 
 }

@@ -3,16 +3,13 @@ package ru.practicum.shareit.item;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/items")
@@ -31,33 +28,14 @@ public class ItemController {
         return ItemMapper.toItemDto(itemService.updateItem(userId, itemId, itemCreateDto));
     }
 
-    @GetMapping("/all")
-    public Map<Integer, ArrayList<ItemDto>> getAllItems() {
-        Map<Integer, ArrayList<ItemDto>> itemsDto = new HashMap<>();
-        ArrayList<ItemDto> itemDtoList = new ArrayList<>();
-        for (Integer key : itemService.getAllItems().keySet()) {
-            for (Item item : itemService.getAllItems().get(key)) {
-                ItemDto itemDto = ItemMapper.toItemDto(item);
-                itemDtoList.add(itemDto);
-            }
-            itemsDto.put(key, itemDtoList);
-        }
-        return itemsDto;
-    }
-
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable int itemId) {
-        return ItemMapper.toItemDto(itemService.getItemById(itemId));
+    public ItemDtoBooking getItemByIdAndUserId(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
+        return itemService.getItemByIdAndUserId(userId, itemId);
     }
 
     @GetMapping
-    public Collection<ItemDto> getItemsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
-        Collection<ItemDto> itemsDto = new ArrayList<>();
-        for (Item item : itemService.getItemsForUser(userId)) {
-            ItemDto itemDto = ItemMapper.toItemDto(item);
-            itemsDto.add(itemDto);
-        }
-        return itemsDto;
+    public Collection<ItemDtoBooking> getItemsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemService.getItemsForUser(userId);
     }
 
     @GetMapping("/search")
@@ -68,6 +46,11 @@ public class ItemController {
             itemsDto.add(itemDto);
         }
         return itemsDto;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId, @RequestBody CommentCreateDto comment) {
+        return itemService.addComment(userId, itemId, comment);
     }
 
 }
