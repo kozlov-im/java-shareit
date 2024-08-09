@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Status;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -24,30 +24,30 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
 
     @Override
-    public Booking addBooking(int bookerId, BookingDto bookingDto) {
+    public Booking addBooking(int bookerId, BookingCreateDto bookingCreateDto) {
         userService.checkUserExist(bookerId);
-        itemService.checkItemAvailable(bookingDto.getItemId());
+        itemService.checkItemAvailable(bookingCreateDto.getItemId());
 
-        if (itemService.getItemById(bookingDto.getItemId()).getOwner().getId() == userService.getUserById(bookerId).getId()) {
-            throw new NotFoundException("itemId = " + bookingDto.getItemId() + " belongs to userId = " + bookerId);
+        if (itemService.getItemById(bookingCreateDto.getItemId()).getOwner().getId() == userService.getUserById(bookerId).getId()) {
+            throw new NotFoundException("itemId = " + bookingCreateDto.getItemId() + " belongs to userId = " + bookerId);
         }
 
         LocalDateTime currentTime = LocalDateTime.now();
-        if (bookingDto.getEnd().isBefore(currentTime)) {
+        if (bookingCreateDto.getEnd().isBefore(currentTime)) {
             throw new BadRequestException("end time is before current time");
         }
-        if (bookingDto.getEnd().isBefore(bookingDto.getStart())) {
+        if (bookingCreateDto.getEnd().isBefore(bookingCreateDto.getStart())) {
             throw new BadRequestException("end time is before start time");
         }
-        if (bookingDto.getStart().isBefore(currentTime)) {
+        if (bookingCreateDto.getStart().isBefore(currentTime)) {
             throw new BadRequestException("start time is before current time");
         }
-        if (bookingDto.getStart().isEqual(bookingDto.getEnd())) {
+        if (bookingCreateDto.getStart().isEqual(bookingCreateDto.getEnd())) {
             throw new BadRequestException("start time is equal end time");
         }
-        checkBooking(bookingDto);
-        bookingDto.setStatus(Status.WAITING);
-        Booking booking = BookingMapper.toBookingModel(bookingDto, itemService.getItemById(bookingDto.getItemId()), userService.getUserById(bookerId));
+        checkBooking(bookingCreateDto);
+        bookingCreateDto.setStatus(Status.WAITING);
+        Booking booking = BookingMapper.toBookingModel(bookingCreateDto, itemService.getItemById(bookingCreateDto.getItemId()), userService.getUserById(bookerId));
         return bookingRepository.save(booking);
     }
 
@@ -123,21 +123,21 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    public void checkBooking(BookingDto bookingDto) {
-        Booking currentApprovedBooking = bookingRepository.getCurrentApprovedBookingForItem(bookingDto.getItemId());
-        Collection<Booking> futureApprovedBooking = bookingRepository.getFutureApprovedBookingForItem(bookingDto.getItemId());
+    public void checkBooking(BookingCreateDto bookingCreateDto) {
+        Booking currentApprovedBooking = bookingRepository.getCurrentApprovedBookingForItem(bookingCreateDto.getItemId());
+        Collection<Booking> futureApprovedBooking = bookingRepository.getFutureApprovedBookingForItem(bookingCreateDto.getItemId());
         if (currentApprovedBooking != null) {
-            if (currentApprovedBooking.getEnd().isAfter(bookingDto.getStart())) {
+            if (currentApprovedBooking.getEnd().isAfter(bookingCreateDto.getStart())) {
                 throw new BadRequestException("item is available after " + currentApprovedBooking.getEnd() + " you should change start time");
             }
         }
 
         for (Booking booking : futureApprovedBooking) {
-            if (bookingDto.getStart().isBefore(booking.getStart()) && bookingDto.getEnd().isBefore(booking.getStart())) {
+            if (bookingCreateDto.getStart().isBefore(booking.getStart()) && bookingCreateDto.getEnd().isBefore(booking.getStart())) {
                 return;
-            } else if (bookingDto.getStart().isBefore(booking.getStart()) && bookingDto.getEnd().isAfter(booking.getStart())) {
+            } else if (bookingCreateDto.getStart().isBefore(booking.getStart()) && bookingCreateDto.getEnd().isAfter(booking.getStart())) {
                 throw new BadRequestException("item is not available from " + booking.getStart() + " you should change end time");
-            } else if (bookingDto.getStart().isAfter(booking.getStart()) && bookingDto.getStart().isBefore(booking.getEnd())) {
+            } else if (bookingCreateDto.getStart().isAfter(booking.getStart()) && bookingCreateDto.getStart().isBefore(booking.getEnd())) {
                 throw new BadRequestException("item is not available. Free time before " + booking.getStart() + " or after " + booking.getEnd());
             }
         }

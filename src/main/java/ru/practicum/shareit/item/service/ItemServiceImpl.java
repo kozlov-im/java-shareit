@@ -70,7 +70,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDtoBooking getItemByIdAndUserId(int userId, int itemId) {
         Collection<Booking> itemBookings = bookingRepository.getBookingForItem(itemId, userId);
-        Collection<Comment> comments = commentRepository.getCommentsForItem(itemId);
+        Collection<Comment> comments = commentRepository.findByItem(getItemById(itemId));
         Collection<CommentDto> commentsDto = new ArrayList<>();
         for (Comment comment : comments) {
             commentsDto.add(CommentMapper.toCommentDto(comment));
@@ -84,10 +84,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Collection<ItemDtoBooking> getItemsForUser(int userId) {
         userService.checkUserExist(userId);
-        Collection<Item> items = itemRepository.getItemsForUser(userId);
+        Collection<Item> items = itemRepository.findByOwner(userService.getUserById(userId));
         Collection<ItemDtoBooking> itemDtoBookings = new ArrayList<>();
         for (Item item : items) {
-            Collection<Comment> comments = commentRepository.getCommentsForItem(item.getId());
+            Collection<Comment> comments = commentRepository.findByItem(item);
             Collection<CommentDto> commentsDto = new ArrayList<>();
             for (Comment comment : comments) {
                 commentsDto.add(CommentMapper.toCommentDto(comment));
