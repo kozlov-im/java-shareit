@@ -15,4 +15,6 @@ public interface UserService {
     User getUserById(int userId);
 
     void deleteUserById(int userId);
+
+    void checkUserExist(int userId);
 }

@@ -2,7 +2,8 @@ package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.InternalServerErrorException;
+import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
@@ -19,44 +20,50 @@ public class UserServiceImpl implements UserService {
     @Override
     public User saveUser(UserCreateDto userCreateDto) {
         User user = UserMapper.toUserModel(userCreateDto);
-        for (User userInArray : userRepository.getAllUsers()) {
-            if (userInArray.getEmail().equals(user.getEmail())) {
-                throw new InternalServerErrorException("email " + user.getEmail() + " already exist");
-            }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new ConflictException("email " + user.getEmail() + " already exist");
         }
-        return userRepository.saveUser(user);
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(int userId, UserCreateDto userCreateDto) {
         User user = UserMapper.toUserModel(userCreateDto);
-        if (String.valueOf(user.getName()) != "null") {
-            userRepository.updateUserName(userId, user);
+        User userForUpdate = getUserById(userId);
+        if (user.getName() != null) {
+            userForUpdate.setName(user.getName());
         }
-        if (String.valueOf(user.getEmail()) != "null") {
-            for (User userInArray : userRepository.getAllUsers()) {
-                if ((userInArray.getEmail().equals(user.getEmail())) && userInArray.getId() != userId) {
-                    throw new InternalServerErrorException("email " + user.getEmail() + " already exist");
-                }
+        if (user.getEmail() != null) {
+            userForUpdate.setEmail(user.getEmail());
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            if (userRepository.findByEmail(user.getEmail()).getId() != userId) {
+                throw new ConflictException("email " + user.getEmail() + " already exist");
             }
-            userRepository.updateUserEmail(userId, user);
         }
-        return userRepository.getUserById(userId);
+        return userRepository.save(userForUpdate);
     }
 
     @Override
     public Collection<User> getAllUsers() {
-        return userRepository.getAllUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public User getUserById(int userId) {
-        return userRepository.getUserById(userId);
+        return userRepository.getReferenceById(userId);
     }
 
     @Override
     public void deleteUserById(int userId) {
-        userRepository.deleteUserById(userId);
+        userRepository.delete(getUserById(userId));
 
+    }
+
+    @Override
+    public void checkUserExist(int userId) {
+        if (!userRepository.findById(userId).isPresent()) {
+            throw new NotFoundException("userId = " + userId + " isn't found");
+        }
     }
 }
