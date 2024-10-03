@@ -11,5 +11,5 @@ public class ItemCreateDto {
     private String description;
     private Boolean available;
     private User owner;
-    private Integer request;
+    private int requestId;
 }

@@ -25,10 +25,11 @@ public class Item {
     @Column(name = "request_id")
     private int request;
 
-    public Item(String name, String description, Boolean available) {
+    public Item(String name, String description, Boolean available, int request) {
         this.name = name;
         this.description = description;
         this.available = available;
+        this.request = request;
     }
 
 }

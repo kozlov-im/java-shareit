@@ -25,7 +25,8 @@ public class ItemMapper {
         return new Item(
                 itemCreateDto.getName(),
                 itemCreateDto.getDescription(),
-                itemCreateDto.getAvailable()
+                itemCreateDto.getAvailable(),
+                itemCreateDto.getRequestId()
         );
     }
 
@@ -51,6 +52,14 @@ public class ItemMapper {
                 lastBooking,
                 nextBooking,
                 comment
+        );
+    }
+
+    public static ItemDtoRequest toItemDtoRequest(Item item) {
+        return new ItemDtoRequest(
+                item.getId(),
+                item.getName(),
+                item.getOwner().getId()
         );
     }
 }

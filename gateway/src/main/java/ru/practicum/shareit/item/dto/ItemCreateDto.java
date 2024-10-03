@@ -16,5 +16,5 @@ public class ItemCreateDto {
     @NotNull(message = "available should not be null")
     private Boolean available;
     private User owner;
-    private Integer request;
+    private int requestId;
 }
