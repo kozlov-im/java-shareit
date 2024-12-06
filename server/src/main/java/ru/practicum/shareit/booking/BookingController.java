@@ -26,7 +26,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto updateBooking(@RequestHeader("X-Sharer-User-Id") int ownerId, @PathVariable int bookingId, @RequestParam boolean approved) {
+    public BookingDto updateBooking(@RequestHeader("X-Sharer-User-Id") int ownerId, @PathVariable int bookingId, @RequestParam String approved) {
         return BookingMapper.toBookingDto(bookingService.updateBooking(ownerId, bookingId, approved));
     }
 
