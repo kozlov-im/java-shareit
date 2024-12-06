@@ -22,7 +22,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Object> createUser(@Validated({Marker.OnCreate.class}) @RequestBody UserCreateDto userCreateDto) {
-        log.info("Create user (it is gateway)");
         return userClient.createUser(userCreateDto);
     }
 

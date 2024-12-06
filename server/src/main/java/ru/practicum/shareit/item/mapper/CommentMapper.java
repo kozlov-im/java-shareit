@@ -15,7 +15,7 @@ public class CommentMapper {
                 comment.getText(),
                 item,
                 user,
-                LocalDateTime.now()
+                LocalDateTime.now().withNano(0)
         );
     }
 

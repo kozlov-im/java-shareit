@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface BookingService {
     Booking addBooking(int bookerId, BookingCreateDto bookingCreateDto);
 
-    Booking updateBooking(int ownerId, int bookingId, boolean approved);
+    Booking updateBooking(int ownerId, int bookingId, String approved);
 
     Booking getBookingByUser(int userId, int bookingId);
 
