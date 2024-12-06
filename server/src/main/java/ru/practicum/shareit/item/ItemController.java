@@ -18,7 +18,6 @@ public class ItemController {
 
     @PostMapping
     public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemCreateDto itemCreateDto) {
-        System.out.println(itemCreateDto);
         return ItemMapper.toItemDto(itemService.createItem(userId, itemCreateDto));
     }
 

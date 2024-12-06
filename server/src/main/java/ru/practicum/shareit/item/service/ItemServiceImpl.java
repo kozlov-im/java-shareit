@@ -2,8 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
@@ -18,9 +16,7 @@ import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +25,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemServiceImplAuxiliary itemServiceAuxiliary;
 
     @Override
     public Item createItem(int userId, ItemCreateDto itemCreateDto) {
@@ -45,16 +42,16 @@ public class ItemServiceImpl implements ItemService {
         checkItemExist(itemId);
         Item item = checkItemForUser(userId, itemId);
 
-        if (String.valueOf(itemForUpdate.getName()) != "null") {
+        if (!String.valueOf(itemForUpdate.getName()).equals("null")) {
             item.setName(itemForUpdate.getName());
         }
-        if (String.valueOf(itemForUpdate.getDescription()) != "null") {
+        if (!String.valueOf(itemForUpdate.getDescription()).equals("null")) {
             item.setDescription(itemForUpdate.getDescription());
         }
-        if (String.valueOf(itemForUpdate.getAvailable()) != "null") {
+        if (!String.valueOf(itemForUpdate.getAvailable()).equals("null")) {
             item.setAvailable(itemForUpdate.getAvailable());
         }
-        if (String.valueOf(itemForUpdate.getRequest()) != "null") {
+        if (!String.valueOf(itemForUpdate.getRequest()).equals("null")) {
             item.setRequest(itemForUpdate.getRequest());
         }
         return itemRepository.save(item);
@@ -75,10 +72,10 @@ public class ItemServiceImpl implements ItemService {
         for (Comment comment : comments) {
             commentsDto.add(CommentMapper.toCommentDto(comment));
         }
-        if (getItemById(itemId).getOwner().getId() != userId || itemBookings.size() == 0) {
+        if (/*getItemById(itemId).getOwner().getId() != userId || */itemBookings.size() == 0) {
             return ItemMapper.toItemDtoBooking(getItemById(itemId), null, null, commentsDto);
         }
-        return createBookingForItem(itemId, itemBookings, commentsDto);
+        return itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, commentsDto);
     }
 
     @Override
@@ -92,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
             for (Comment comment : comments) {
                 commentsDto.add(CommentMapper.toCommentDto(comment));
             }
-            ItemDtoBooking itemDtoBooking = createBookingForItem(item.getId(),
+            ItemDtoBooking itemDtoBooking = itemServiceAuxiliary.createBookingForItem(item.getId(),
                     bookingRepository.getBookingForItem(item.getId(), userId), commentsDto
             );
             itemDtoBookings.add(itemDtoBooking);
@@ -111,7 +108,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void checkItemExist(int itemId) {
-        if (!itemRepository.findById(itemId).isPresent()) {
+        if (itemRepository.findById(itemId).isEmpty()) {
             throw new NotFoundException("itemId = " + itemId + " isn't found");
         }
     }
@@ -140,53 +137,9 @@ public class ItemServiceImpl implements ItemService {
 
     public Item checkItemForUser(int userId, int itemId) {
         Item item = itemRepository.getItemForUser(itemId, userId);
-        System.out.println(item);
         if (item == null) {
             throw new NotFoundException("userId = " + userId + " isn't owner for itemId = " + itemId);
         }
         return item;
     }
-
-    public ItemDtoBooking createBookingForItem(int itemId, Collection<Booking> itemBookings, Collection<CommentDto> commentsDto) {
-        LocalDateTime currentTime = LocalDateTime.now();
-        Collection<Booking> lastBookings = itemBookings.stream().filter(i -> i.getEnd().isBefore(currentTime))
-                .collect(Collectors.toList());
-
-        List lastBookingsList = new ArrayList<>(lastBookings);
-        Collections.sort(lastBookingsList, new Comparator<Booking>() {
-            public int compare(Booking b1, Booking b2) {
-                return b1.getStart().compareTo(b2.getStart());
-            }
-        });
-
-
-        Collection<Booking> nextBookings = itemBookings.stream().filter(i -> i.getEnd().isAfter(currentTime))
-                .collect(Collectors.toList());
-
-        List nextBookingsList = new ArrayList<>(nextBookings);
-
-        Collections.sort(nextBookingsList, new Comparator<Booking>() {
-            public int compare(Booking b1, Booking b2) {
-                return b1.getStart().compareTo(b2.getStart());
-            }
-        });
-
-        BookingDto lastBookingDto;
-        BookingDto nextBookingDto;
-        if (lastBookingsList.size() == 0) {
-            lastBookingDto = null;
-        } else {
-            lastBookingDto = BookingMapper.toBookingDto((Booking) lastBookingsList.get(lastBookingsList.size() - 1));
-        }
-
-        if (nextBookingsList.size() == 0) {
-            nextBookingDto = null;
-        } else {
-            nextBookingDto = BookingMapper.toBookingDto((Booking) nextBookingsList.get(0));
-        }
-
-        Item item = itemRepository.getReferenceById(itemId);
-        return ItemMapper.toItemDtoBooking(item, lastBookingDto, nextBookingDto, commentsDto);
-    }
-
 }

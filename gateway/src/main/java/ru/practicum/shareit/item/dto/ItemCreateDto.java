@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import ru.practicum.shareit.user.User;
 
 @Data
 @AllArgsConstructor
@@ -15,6 +14,5 @@ public class ItemCreateDto {
     private String description;
     @NotNull(message = "available should not be null")
     private Boolean available;
-    private User owner;
     private int requestId;
 }

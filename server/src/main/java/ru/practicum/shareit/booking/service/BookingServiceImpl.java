@@ -22,6 +22,7 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
     private final ItemService itemService;
+    private final BookingServiceImplAuxiliary bookingServiceAuxiliary;
 
     @Override
     public Booking addBooking(int bookerId, BookingCreateDto bookingCreateDto) {
@@ -32,7 +33,7 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("itemId = " + bookingCreateDto.getItemId() + " belongs to userId = " + bookerId);
         }
 
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now().withNano(0);
         if (bookingCreateDto.getEnd().isBefore(currentTime)) {
             throw new BadRequestException("end time is before current time");
         }
@@ -45,19 +46,18 @@ public class BookingServiceImpl implements BookingService {
         if (bookingCreateDto.getStart().isEqual(bookingCreateDto.getEnd())) {
             throw new BadRequestException("start time is equal end time");
         }
-        checkBooking(bookingCreateDto);
-        bookingCreateDto.setStatus(Status.WAITING);
+        bookingServiceAuxiliary.checkBooking(bookingCreateDto);
         Booking booking = BookingMapper.toBookingModel(bookingCreateDto, itemService.getItemById(bookingCreateDto.getItemId()), userService.getUserById(bookerId));
         return bookingRepository.save(booking);
     }
 
     @Override
-    public Booking updateBooking(int ownerId, int bookingId, boolean approved) {
+    public Booking updateBooking(int ownerId, int bookingId, String approved) {
         Booking foundedBooking = bookingRepository.getBookingByOwner(ownerId, bookingId);
         if (foundedBooking == null) {
             throw new InternalServerErrorException("owner or booking not found");
         }
-        if (approved) {
+        if (approved.equals("true")) {
             if (foundedBooking.getStatus().equals(Status.APPROVED)) {
                 throw new InternalServerErrorException("status has been already approved");
             } else {
@@ -120,26 +120,6 @@ public class BookingServiceImpl implements BookingService {
             return bookingRepository.getBookingForOwnerWithState(ownerId, Status.REJECTED);
         } else {
             throw new NotFoundException("Unknown state: UNSUPPORTED_STATUS");
-        }
-    }
-
-    public void checkBooking(BookingCreateDto bookingCreateDto) {
-        Booking currentApprovedBooking = bookingRepository.getCurrentApprovedBookingForItem(bookingCreateDto.getItemId());
-        Collection<Booking> futureApprovedBooking = bookingRepository.getFutureApprovedBookingForItem(bookingCreateDto.getItemId());
-        if (currentApprovedBooking != null) {
-            if (currentApprovedBooking.getEnd().isAfter(bookingCreateDto.getStart())) {
-                throw new BadRequestException("item is available after " + currentApprovedBooking.getEnd() + " you should change start time");
-            }
-        }
-
-        for (Booking booking : futureApprovedBooking) {
-            if (bookingCreateDto.getStart().isBefore(booking.getStart()) && bookingCreateDto.getEnd().isBefore(booking.getStart())) {
-                return;
-            } else if (bookingCreateDto.getStart().isBefore(booking.getStart()) && bookingCreateDto.getEnd().isAfter(booking.getStart())) {
-                throw new BadRequestException("item is not available from " + booking.getStart() + " you should change end time");
-            } else if (bookingCreateDto.getStart().isAfter(booking.getStart()) && bookingCreateDto.getStart().isBefore(booking.getEnd())) {
-                throw new BadRequestException("item is not available. Free time before " + booking.getStart() + " or after " + booking.getEnd());
-            }
         }
     }
 }
