@@ -29,7 +29,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequest addRequest(int userId, ItemRequestCreateDto itemRequestCreateDto) {
         userService.checkUserExist(userId);
         User user = userService.getUserById(userId);
-        LocalDateTime created = LocalDateTime.now();
+        LocalDateTime created = LocalDateTime.now().withNano(0);
         ItemRequest itemRequest = ItemRequestMapper.toItemRequestModel(itemRequestCreateDto, user, created);
         return itemRequestRepository.save(itemRequest);
     }
