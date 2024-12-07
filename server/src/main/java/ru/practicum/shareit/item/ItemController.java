@@ -23,17 +23,17 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId,
-                              @RequestBody ItemCreateDto itemCreateDto) {
-        return ItemMapper.toItemDto(itemService.updateItem(userId, itemId, itemCreateDto));
+                              @RequestBody ItemUpdateDto itemUpdateDto) {
+        return ItemMapper.toItemDto(itemService.updateItem(userId, itemId, itemUpdateDto));
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoBooking getItemByIdAndUserId(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
+    public ItemBookingDto getItemByIdAndUserId(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
         return itemService.getItemByIdAndUserId(userId, itemId);
     }
 
     @GetMapping
-    public Collection<ItemDtoBooking> getItemsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
+    public Collection<ItemBookingDto> getItemsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
         return itemService.getItemsForUser(userId);
     }
 

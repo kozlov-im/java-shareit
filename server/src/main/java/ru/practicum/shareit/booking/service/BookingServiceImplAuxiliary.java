@@ -13,7 +13,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class BookingServiceImplAuxiliary {
 
-    BookingRepository bookingRepository;
+    private final BookingRepository bookingRepository;
 
     public void checkBooking(BookingCreateDto bookingCreateDto) {
         Booking currentApprovedBooking = bookingRepository.getCurrentApprovedBookingForItem(bookingCreateDto.getItemId());

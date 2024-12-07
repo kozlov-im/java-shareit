@@ -9,6 +9,7 @@ import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
@@ -49,28 +50,28 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_whenEmailUnique_thenUpdate() {
-        UserCreateDto userCreateDto = new UserCreateDto("userNameUpdated", "emailUpdated@mail.ru");
+        UserUpdateDto userUpdateDto = new UserUpdateDto("userNameUpdated", "emailUpdated@mail.ru");
         User user = new User(1, "userName", "email@mail.ru");
         User updatedUser = new User(1, "userNameUpdated", "emailUpdated@mail.ru");
 
         when(userService.getUserById(1)).thenReturn(user);
         when(userRepository.findByEmail(updatedUser.getEmail())).thenReturn(null);
         when(userRepository.save(updatedUser)).thenReturn(updatedUser);
-        User returnedUpdatedUser = userService.updateUser(user.getId(), userCreateDto);
+        User returnedUpdatedUser = userService.updateUser(user.getId(), userUpdateDto);
         assertEquals(updatedUser, returnedUpdatedUser);
         verify(userRepository, times(1)).save(user);
     }
 
     @Test
     void updateUser_whenEmailNotUnique_thenExceptionThrown() {
-        UserCreateDto userCreateDto = new UserCreateDto("userNameUpdated", "emailUpdated@mail.ru");
+        UserUpdateDto userUpdateDto = new UserUpdateDto("userNameUpdated", "emailUpdated@mail.ru");
         User user = new User(1, "userName", "email@mail.ru");
         User user2 = new User(2, "user2Name", "email2@mail.ru");
         User updatedUser = new User(1, "userNameUpdated", "emailUpdated@mail.ru");
 
         when(userService.getUserById(1)).thenReturn(user);
         when(userRepository.findByEmail(updatedUser.getEmail())).thenReturn(user2);
-        assertThrows(ConflictException.class, () -> userService.updateUser(1, userCreateDto));
+        assertThrows(ConflictException.class, () -> userService.updateUser(1, userUpdateDto));
         verify(userRepository, never()).save(user);
     }
 

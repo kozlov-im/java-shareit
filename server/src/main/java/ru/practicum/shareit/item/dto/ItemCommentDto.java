@@ -7,7 +7,7 @@ import ru.practicum.shareit.item.model.Comment;
 
 @Data
 @AllArgsConstructor
-public class ItemDtoComment {
+public class ItemCommentDto {
     private int id;
     private String name;
     private String description;

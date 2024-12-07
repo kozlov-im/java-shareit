@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.user.dto.UserCreateDto;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.Collection;
@@ -23,12 +24,14 @@ class UserControllerTest {
     @InjectMocks
     UserController userController;
     UserCreateDto userCreateDto;
+    UserUpdateDto userUpdateDto;
     User user;
     UserDto userDto;
 
     @BeforeEach
     void setUp() {
         userCreateDto = new UserCreateDto("userName", "email@mail.ru");
+        userUpdateDto = new UserUpdateDto("userName", "email@mail.ru");
         user = new User(1, "userName", "email@mail.ru");
         userDto = new UserDto(1, "userName", "email@mail.ru");
     }
@@ -46,8 +49,8 @@ class UserControllerTest {
         UserDto updatedUserDto = new UserDto(1, "userNameUpdated", "emailUpdated@mail.ru");
         int userId = 1;
 
-        when(userService.updateUser(userId, userCreateDto)).thenReturn(updatedUser);
-        UserDto returnedUser = userController.updateUser(userCreateDto, userId);
+        when(userService.updateUser(userId, userUpdateDto)).thenReturn(updatedUser);
+        UserDto returnedUser = userController.updateUser(userUpdateDto, userId);
         assertEquals(updatedUserDto, returnedUser);
     }
 

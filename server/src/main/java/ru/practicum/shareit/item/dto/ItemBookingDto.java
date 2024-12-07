@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @Data
 @AllArgsConstructor
-public class ItemDtoBooking {
+public class ItemBookingDto {
     private int id;
     private String name;
     private String description;

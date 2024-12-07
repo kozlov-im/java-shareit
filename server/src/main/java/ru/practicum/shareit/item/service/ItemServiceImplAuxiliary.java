@@ -6,7 +6,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDtoBooking;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImplAuxiliary {
     private final ItemRepository itemRepository;
 
-    public ItemDtoBooking createBookingForItem(int itemId, Collection<Booking> itemBookings, Collection<CommentDto> commentsDto) {
+    public ItemBookingDto createBookingForItem(int itemId, Collection<Booking> itemBookings, Collection<CommentDto> commentsDto) {
         LocalDateTime currentTime = LocalDateTime.now().withNano(0);
         Collection<Booking> lastBookings = itemBookings.stream().filter(i -> i.getEnd().isBefore(currentTime))
                 .collect(Collectors.toList());

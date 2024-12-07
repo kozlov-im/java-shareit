@@ -12,10 +12,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.InternalServerErrorException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.dto.CommentCreateDto;
-import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemCreateDto;
-import ru.practicum.shareit.item.dto.ItemDtoBooking;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
@@ -69,7 +66,7 @@ class ItemServiceImplTest {
         int userId = 1;
         int itemId = 1;
         User user = new User(1, "userName", "email@mail.ru");
-        ItemCreateDto itemUpdateCreateDto = new ItemCreateDto("itemNameUpdated", "itemDescriptionUpdated", true);
+        ItemUpdateDto itemUpdateDto = new ItemUpdateDto("itemNameUpdated", "itemDescriptionUpdated", true);
         Item item = new Item(0, "itemName", "itemDescription", true, user, 0);
 
         doNothing().when(userService).checkUserExist(userId);
@@ -77,7 +74,7 @@ class ItemServiceImplTest {
         when(itemRepository.save(item)).thenReturn(item);
         when(itemRepository.getItemForUser(userId, itemId)).thenReturn(item);
 
-        Item returnedItem = itemService.updateItem(userId, itemId, itemUpdateCreateDto);
+        Item returnedItem = itemService.updateItem(userId, itemId, itemUpdateDto);
         assertEquals(item, returnedItem);
     }
 
@@ -125,7 +122,7 @@ class ItemServiceImplTest {
                 LocalDateTime.of(2024, 11, 20, 11, 1, 1));
 
 
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 lastBookingDto,
@@ -142,11 +139,11 @@ class ItemServiceImplTest {
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item1));
         when(itemRepository.getReferenceById(itemId)).thenReturn(item1);
         when(commentRepository.findByItem(item1)).thenReturn(comments);
-        when(itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, commentsDto)).thenReturn(itemDtoBooking);
+        when(itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, commentsDto)).thenReturn(itemBookingDto);
 
-        ItemDtoBooking returnedItemDtoBooking = itemService.getItemByIdAndUserId(userId, itemId);
+        ItemBookingDto returnedItemBookingDto = itemService.getItemByIdAndUserId(userId, itemId);
 
-        assertEquals(itemDtoBooking, returnedItemDtoBooking);
+        assertEquals(itemBookingDto, returnedItemBookingDto);
     }
 
     @Test
@@ -163,7 +160,7 @@ class ItemServiceImplTest {
         Comment comment = new Comment(1, "comment", item1, user2,
                 LocalDateTime.of(2024, 11, 20, 11, 1, 1));
 
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 null,
@@ -178,8 +175,8 @@ class ItemServiceImplTest {
         when(itemRepository.getReferenceById(itemId)).thenReturn(item1);
         when(commentRepository.findByItem(item1)).thenReturn(comments);
 
-        ItemDtoBooking returnedItemDtoBooking = itemService.getItemByIdAndUserId(userId, itemId);
-        assertEquals(itemDtoBooking, returnedItemDtoBooking);
+        ItemBookingDto returnedItemBookingDto = itemService.getItemByIdAndUserId(userId, itemId);
+        assertEquals(itemBookingDto, returnedItemBookingDto);
     }
 
     @Test
@@ -210,7 +207,7 @@ class ItemServiceImplTest {
         CommentDto commentDto = new CommentDto(1, "comment", item1, "user2Name",
                 LocalDateTime.of(2024, 11, 20, 11, 1, 1));
 
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 lastBookingDto,
@@ -223,10 +220,10 @@ class ItemServiceImplTest {
         when(itemRepository.findByOwner(user1)).thenReturn(List.of(item1));
         when(commentRepository.findByItem(item1)).thenReturn(List.of(comment));
         when(bookingRepository.getBookingForItem(itemId, userId)).thenReturn(itemBookings);
-        when(itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, List.of(commentDto))).thenReturn(itemDtoBooking);
+        when(itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, List.of(commentDto))).thenReturn(itemBookingDto);
 
-        Collection<ItemDtoBooking> returnedItemDtoBookings = itemService.getItemsForUser(userId);
-        assertEquals(List.of(itemDtoBooking), returnedItemDtoBookings);
+        Collection<ItemBookingDto> returnedItemBookingDtos = itemService.getItemsForUser(userId);
+        assertEquals(List.of(itemBookingDto), returnedItemBookingDtos);
     }
 
     @Test

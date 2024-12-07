@@ -9,13 +9,13 @@ public interface ItemService {
 
     Item createItem(int userId, ItemCreateDto itemCreateDto);
 
-    Item updateItem(int userId, int itemId, ItemCreateDto itemCreateDto);
+    Item updateItem(int userId, int itemId, ItemUpdateDto itemUpdateDto);
 
     Item getItemById(int itemId);
 
-    ItemDtoBooking getItemByIdAndUserId(int userId, int itemId);
+    ItemBookingDto getItemByIdAndUserId(int userId, int itemId);
 
-    Collection<ItemDtoBooking> getItemsForUser(int userId);
+    Collection<ItemBookingDto> getItemsForUser(int userId);
 
     Collection<Item> searchItems(String text);
 

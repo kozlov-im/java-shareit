@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exception.Marker;
 import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 
 @Controller
@@ -21,15 +21,15 @@ public class UserController {
     private final UserClient userClient;
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@Validated({Marker.OnCreate.class}) @RequestBody UserCreateDto userCreateDto) {
+    public ResponseEntity<Object> createUser(@Valid @RequestBody UserCreateDto userCreateDto) {
         return userClient.createUser(userCreateDto);
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserCreateDto userCreateDto,
+    public ResponseEntity<Object> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto,
                                              @PathVariable long userId) {
         log.info("Update user userId={}", userId);
-        return userClient.updateUser(userCreateDto, userId);
+        return userClient.updateUser(userUpdateDto, userId);
     }
 
     @GetMapping

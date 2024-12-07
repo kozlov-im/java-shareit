@@ -31,7 +31,6 @@ public class ErrorHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         List<String> errorMessage = (List<String>) e.getBindingResult()
                 .getFieldErrors()
@@ -51,7 +50,6 @@ public class ErrorHandler {
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     public ErrorResponse handleMissingRequestHeaderException(MissingRequestHeaderException e) {
         log.info("handleMissingRequestHeaderException {}", e.getMessage());
         return new ErrorResponse("error", e.getMessage());
@@ -59,7 +57,6 @@ public class ErrorHandler {
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
     public ErrorResponse handleThrowableException(Throwable e) {
         log.info("handleThrowableException {}", e.getMessage());
         return new ErrorResponse("error", e.getMessage());

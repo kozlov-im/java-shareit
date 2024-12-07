@@ -6,6 +6,7 @@ import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -27,8 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int userId, UserCreateDto userCreateDto) {
-        User user = UserMapper.toUserModel(userCreateDto);
+    public User updateUser(int userId, UserUpdateDto userUpdateDto) {
+        User user = UserMapper.toUserModel(userUpdateDto);
         User userForUpdate = getUserById(userId);
         if (user.getName() != null) {
             userForUpdate.setName(user.getName());

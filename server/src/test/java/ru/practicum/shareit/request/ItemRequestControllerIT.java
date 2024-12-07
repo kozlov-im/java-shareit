@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import ru.practicum.shareit.request.dto.ItemRequestShortDto;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithAnswer;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -62,11 +62,11 @@ class ItemRequestControllerIT {
     @Test
     void getRequests() throws Exception {
         int userId = 1;
-        ItemDtoRequest itemDtoRequest = new ItemDtoRequest(1, "itemRequestName", 2);
+        ItemRequestShortDto itemRequestShortDto = new ItemRequestShortDto(1, "itemRequestName", 2);
         ItemRequestDtoWithAnswer itemRequestDtoWithAnswer = new ItemRequestDtoWithAnswer(
                 1, "request description",
                 LocalDateTime.of(2024, 11, 20, 9, 1, 1),
-                List.of(itemDtoRequest));
+                List.of(itemRequestShortDto));
 
         when(itemRequestService.getRequests(userId)).thenReturn(List.of(itemRequestDtoWithAnswer));
 
@@ -105,11 +105,11 @@ class ItemRequestControllerIT {
     void getRequestData() throws Exception {
         int userId = 1;
         int requestId = 1;
-        ItemDtoRequest itemDtoRequest = new ItemDtoRequest(1, "itemRequestName", 2);
+        ItemRequestShortDto itemRequestShortDto = new ItemRequestShortDto(1, "itemRequestName", 2);
         ItemRequestDtoWithAnswer itemRequestDtoWithAnswer = new ItemRequestDtoWithAnswer(
                 1, "request description",
                 LocalDateTime.of(2024, 11, 20, 9, 1, 1),
-                List.of(itemDtoRequest));
+                List.of(itemRequestShortDto));
 
         when(itemRequestService.getRequestData(requestId)).thenReturn(itemRequestDtoWithAnswer);
 

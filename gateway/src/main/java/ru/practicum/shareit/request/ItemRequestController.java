@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
-//import ru.practicum.shareit.request.service.ItemRequestService;
 
 
 @Controller
@@ -16,7 +15,6 @@ import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 @Slf4j
 @Validated
 public class ItemRequestController {
-    //private final ItemRequestService itemRequestService;
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping

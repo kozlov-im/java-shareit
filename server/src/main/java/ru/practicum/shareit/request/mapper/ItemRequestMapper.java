@@ -1,6 +1,6 @@
 package ru.practicum.shareit.request.mapper;
 
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import ru.practicum.shareit.request.dto.ItemRequestShortDto;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoWithAnswer;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -17,12 +17,12 @@ public class ItemRequestMapper {
     }
 
     public static ItemRequestDtoWithAnswer toItemRequestDtoWithAnswer(ItemRequest itemRequest,
-                                                                      Collection<ItemDtoRequest> itemDtoRequests) {
+                                                                      Collection<ItemRequestShortDto> itemRequestShortDtos) {
         return new ItemRequestDtoWithAnswer(
                 itemRequest.getId(),
                 itemRequest.getDescription(),
                 itemRequest.getCreated(),
-                itemDtoRequests
+                itemRequestShortDtos
                 );
     }
 }

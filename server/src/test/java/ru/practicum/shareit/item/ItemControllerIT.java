@@ -76,7 +76,7 @@ class ItemControllerIT {
     void updateItem() throws Exception {
         int userId = 1;
         int itemId = 1;
-        ItemCreateDto itemUpdateDto = new ItemCreateDto("itemNameUpdated", "itemDescriptionUpdated", true, user, 0);
+        ItemUpdateDto itemUpdateDto = new ItemUpdateDto("itemNameUpdated", "itemDescriptionUpdated", true, user, 0);
         when(itemService.updateItem(userId, itemId, itemUpdateDto)).thenReturn(item);
 
         mvc.perform(patch("/items/{itemId}", itemId)
@@ -112,7 +112,7 @@ class ItemControllerIT {
         BookingDto nextBookingDto = new BookingDto(2, LocalDateTime.of(2024, 11, 21, 9, 1, 1),
                 LocalDateTime.of(2024, 11, 21, 10, 1, 1),
                 item1, user3, Status.WAITING);
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 lastBookingDto,
@@ -120,39 +120,39 @@ class ItemControllerIT {
                 List.of(new CommentDto(1, "comment", item1, "user2Name",
                         LocalDateTime.of(2024, 11, 20, 11, 1, 1))));
 
-        when(itemService.getItemByIdAndUserId(userId, itemId)).thenReturn(itemDtoBooking);
+        when(itemService.getItemByIdAndUserId(userId, itemId)).thenReturn(itemBookingDto);
 
         mvc.perform(get("/items/{itemId}", itemId)
-                        .content(mapper.writeValueAsString(itemDtoBooking))
+                        .content(mapper.writeValueAsString(itemBookingDto))
                         .header("X-Sharer-User-Id", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(itemDtoBooking.getId())))
-                .andExpect(jsonPath("$.name", is(itemDtoBooking.getName())))
-                .andExpect(jsonPath("$.description", is(itemDtoBooking.getDescription())))
-                .andExpect(jsonPath("$.available", is(itemDtoBooking.getAvailable())))
-                .andExpect(jsonPath("$.lastBooking.id", is(itemDtoBooking.getLastBooking().getId())))
-                .andExpect(jsonPath("$.lastBooking.start", is(itemDtoBooking.getLastBooking().getStart().toString())))
-                .andExpect(jsonPath("$.lastBooking.end", is(itemDtoBooking.getLastBooking().getEnd().toString())))
-                .andExpect(jsonPath("$.lastBooking.item.id", is(itemDtoBooking.getLastBooking().getItem().getId())))
-                .andExpect(jsonPath("$.lastBooking.item.name", is(itemDtoBooking.getLastBooking().getItem().getName())))
-                .andExpect(jsonPath("$.lastBooking.item.description", is(itemDtoBooking.getLastBooking().getItem().getDescription())))
-                .andExpect(jsonPath("$.lastBooking.item.available", is(itemDtoBooking.getLastBooking().getItem().getAvailable())))
-                .andExpect(jsonPath("$.lastBooking.item.owner.id", is(itemDtoBooking.getLastBooking().getItem().getOwner().getId())))
-                .andExpect(jsonPath("$.lastBooking.item.owner.name", is(itemDtoBooking.getLastBooking().getItem().getOwner().getName())))
-                .andExpect(jsonPath("$.lastBooking.item.owner.email", is(itemDtoBooking.getLastBooking().getItem().getOwner().getEmail())))
-                .andExpect(jsonPath("$.nextBooking.id", is(itemDtoBooking.getNextBooking().getId())))
-                .andExpect(jsonPath("$.nextBooking.start", is(itemDtoBooking.getNextBooking().getStart().toString())))
-                .andExpect(jsonPath("$.nextBooking.end", is(itemDtoBooking.getNextBooking().getEnd().toString())))
-                .andExpect(jsonPath("$.nextBooking.item.id", is(itemDtoBooking.getNextBooking().getItem().getId())))
-                .andExpect(jsonPath("$.nextBooking.item.name", is(itemDtoBooking.getNextBooking().getItem().getName())))
-                .andExpect(jsonPath("$.nextBooking.item.description", is(itemDtoBooking.getNextBooking().getItem().getDescription())))
-                .andExpect(jsonPath("$.nextBooking.item.available", is(itemDtoBooking.getNextBooking().getItem().getAvailable())))
-                .andExpect(jsonPath("$.nextBooking.item.owner.id", is(itemDtoBooking.getNextBooking().getItem().getOwner().getId())))
-                .andExpect(jsonPath("$.nextBooking.item.owner.name", is(itemDtoBooking.getNextBooking().getItem().getOwner().getName())))
-                .andExpect(jsonPath("$.nextBooking.item.owner.email", is(itemDtoBooking.getNextBooking().getItem().getOwner().getEmail())));
+                .andExpect(jsonPath("$.id", is(itemBookingDto.getId())))
+                .andExpect(jsonPath("$.name", is(itemBookingDto.getName())))
+                .andExpect(jsonPath("$.description", is(itemBookingDto.getDescription())))
+                .andExpect(jsonPath("$.available", is(itemBookingDto.getAvailable())))
+                .andExpect(jsonPath("$.lastBooking.id", is(itemBookingDto.getLastBooking().getId())))
+                .andExpect(jsonPath("$.lastBooking.start", is(itemBookingDto.getLastBooking().getStart().toString())))
+                .andExpect(jsonPath("$.lastBooking.end", is(itemBookingDto.getLastBooking().getEnd().toString())))
+                .andExpect(jsonPath("$.lastBooking.item.id", is(itemBookingDto.getLastBooking().getItem().getId())))
+                .andExpect(jsonPath("$.lastBooking.item.name", is(itemBookingDto.getLastBooking().getItem().getName())))
+                .andExpect(jsonPath("$.lastBooking.item.description", is(itemBookingDto.getLastBooking().getItem().getDescription())))
+                .andExpect(jsonPath("$.lastBooking.item.available", is(itemBookingDto.getLastBooking().getItem().getAvailable())))
+                .andExpect(jsonPath("$.lastBooking.item.owner.id", is(itemBookingDto.getLastBooking().getItem().getOwner().getId())))
+                .andExpect(jsonPath("$.lastBooking.item.owner.name", is(itemBookingDto.getLastBooking().getItem().getOwner().getName())))
+                .andExpect(jsonPath("$.lastBooking.item.owner.email", is(itemBookingDto.getLastBooking().getItem().getOwner().getEmail())))
+                .andExpect(jsonPath("$.nextBooking.id", is(itemBookingDto.getNextBooking().getId())))
+                .andExpect(jsonPath("$.nextBooking.start", is(itemBookingDto.getNextBooking().getStart().toString())))
+                .andExpect(jsonPath("$.nextBooking.end", is(itemBookingDto.getNextBooking().getEnd().toString())))
+                .andExpect(jsonPath("$.nextBooking.item.id", is(itemBookingDto.getNextBooking().getItem().getId())))
+                .andExpect(jsonPath("$.nextBooking.item.name", is(itemBookingDto.getNextBooking().getItem().getName())))
+                .andExpect(jsonPath("$.nextBooking.item.description", is(itemBookingDto.getNextBooking().getItem().getDescription())))
+                .andExpect(jsonPath("$.nextBooking.item.available", is(itemBookingDto.getNextBooking().getItem().getAvailable())))
+                .andExpect(jsonPath("$.nextBooking.item.owner.id", is(itemBookingDto.getNextBooking().getItem().getOwner().getId())))
+                .andExpect(jsonPath("$.nextBooking.item.owner.name", is(itemBookingDto.getNextBooking().getItem().getOwner().getName())))
+                .andExpect(jsonPath("$.nextBooking.item.owner.email", is(itemBookingDto.getNextBooking().getItem().getOwner().getEmail())));
     }
 
     @Test
@@ -169,7 +169,7 @@ class ItemControllerIT {
         BookingDto nextBookingDto = new BookingDto(2, LocalDateTime.of(2024, 11, 21, 9, 1, 1),
                 LocalDateTime.of(2024, 11, 21, 10, 1, 1),
                 item1, user3, Status.WAITING);
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 lastBookingDto,
@@ -177,40 +177,40 @@ class ItemControllerIT {
                 List.of(new CommentDto(1, "comment", item1, "user2Name",
                         LocalDateTime.of(2024, 11, 20, 11, 1, 1))));
 
-        Collection<ItemDtoBooking> itemDtoBookings = List.of(itemDtoBooking);
-        when(itemService.getItemsForUser(userId)).thenReturn(itemDtoBookings);
+        Collection<ItemBookingDto> itemBookingDtos = List.of(itemBookingDto);
+        when(itemService.getItemsForUser(userId)).thenReturn(itemBookingDtos);
 
         mvc.perform(get("/items")
-                        .content(mapper.writeValueAsString(itemDtoBooking))
+                        .content(mapper.writeValueAsString(itemBookingDto))
                         .header("X-Sharer-User-Id", userId)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].id", is(itemDtoBooking.getId())))
-                .andExpect(jsonPath("$.[0].name", is(itemDtoBooking.getName())))
-                .andExpect(jsonPath("$.[0].description", is(itemDtoBooking.getDescription())))
-                .andExpect(jsonPath("$.[0].available", is(itemDtoBooking.getAvailable())))
-                .andExpect(jsonPath("$.[0].lastBooking.id", is(itemDtoBooking.getLastBooking().getId())))
-                .andExpect(jsonPath("$.[0].lastBooking.start", is(itemDtoBooking.getLastBooking().getStart().toString())))
-                .andExpect(jsonPath("$.[0].lastBooking.end", is(itemDtoBooking.getLastBooking().getEnd().toString())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.id", is(itemDtoBooking.getLastBooking().getItem().getId())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.name", is(itemDtoBooking.getLastBooking().getItem().getName())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.description", is(itemDtoBooking.getLastBooking().getItem().getDescription())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.available", is(itemDtoBooking.getLastBooking().getItem().getAvailable())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.owner.id", is(itemDtoBooking.getLastBooking().getItem().getOwner().getId())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.owner.name", is(itemDtoBooking.getLastBooking().getItem().getOwner().getName())))
-                .andExpect(jsonPath("$.[0].lastBooking.item.owner.email", is(itemDtoBooking.getLastBooking().getItem().getOwner().getEmail())))
-                .andExpect(jsonPath("$.[0].nextBooking.id", is(itemDtoBooking.getNextBooking().getId())))
-                .andExpect(jsonPath("$.[0].nextBooking.start", is(itemDtoBooking.getNextBooking().getStart().toString())))
-                .andExpect(jsonPath("$.[0].nextBooking.end", is(itemDtoBooking.getNextBooking().getEnd().toString())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.id", is(itemDtoBooking.getNextBooking().getItem().getId())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.name", is(itemDtoBooking.getNextBooking().getItem().getName())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.description", is(itemDtoBooking.getNextBooking().getItem().getDescription())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.available", is(itemDtoBooking.getNextBooking().getItem().getAvailable())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.owner.id", is(itemDtoBooking.getNextBooking().getItem().getOwner().getId())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.owner.name", is(itemDtoBooking.getNextBooking().getItem().getOwner().getName())))
-                .andExpect(jsonPath("$.[0].nextBooking.item.owner.email", is(itemDtoBooking.getNextBooking().getItem().getOwner().getEmail())));
+                .andExpect(jsonPath("$.[0].id", is(itemBookingDto.getId())))
+                .andExpect(jsonPath("$.[0].name", is(itemBookingDto.getName())))
+                .andExpect(jsonPath("$.[0].description", is(itemBookingDto.getDescription())))
+                .andExpect(jsonPath("$.[0].available", is(itemBookingDto.getAvailable())))
+                .andExpect(jsonPath("$.[0].lastBooking.id", is(itemBookingDto.getLastBooking().getId())))
+                .andExpect(jsonPath("$.[0].lastBooking.start", is(itemBookingDto.getLastBooking().getStart().toString())))
+                .andExpect(jsonPath("$.[0].lastBooking.end", is(itemBookingDto.getLastBooking().getEnd().toString())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.id", is(itemBookingDto.getLastBooking().getItem().getId())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.name", is(itemBookingDto.getLastBooking().getItem().getName())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.description", is(itemBookingDto.getLastBooking().getItem().getDescription())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.available", is(itemBookingDto.getLastBooking().getItem().getAvailable())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.owner.id", is(itemBookingDto.getLastBooking().getItem().getOwner().getId())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.owner.name", is(itemBookingDto.getLastBooking().getItem().getOwner().getName())))
+                .andExpect(jsonPath("$.[0].lastBooking.item.owner.email", is(itemBookingDto.getLastBooking().getItem().getOwner().getEmail())))
+                .andExpect(jsonPath("$.[0].nextBooking.id", is(itemBookingDto.getNextBooking().getId())))
+                .andExpect(jsonPath("$.[0].nextBooking.start", is(itemBookingDto.getNextBooking().getStart().toString())))
+                .andExpect(jsonPath("$.[0].nextBooking.end", is(itemBookingDto.getNextBooking().getEnd().toString())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.id", is(itemBookingDto.getNextBooking().getItem().getId())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.name", is(itemBookingDto.getNextBooking().getItem().getName())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.description", is(itemBookingDto.getNextBooking().getItem().getDescription())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.available", is(itemBookingDto.getNextBooking().getItem().getAvailable())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.owner.id", is(itemBookingDto.getNextBooking().getItem().getOwner().getId())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.owner.name", is(itemBookingDto.getNextBooking().getItem().getOwner().getName())))
+                .andExpect(jsonPath("$.[0].nextBooking.item.owner.email", is(itemBookingDto.getNextBooking().getItem().getOwner().getEmail())));
     }
 
     @Test

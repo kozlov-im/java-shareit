@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import ru.practicum.shareit.request.dto.ItemRequestShortDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
@@ -58,13 +58,13 @@ class ItemRequestServiceImplTest {
         User user1 = new User(1, "user1Name", "email1@mail.ru");
         Item item1 = new Item(1, "itemRequestName", "item1Description", true, user1, 1);
 
-        ItemDtoRequest itemDtoRequest = new ItemDtoRequest(1, "itemRequestName", 1);
+        ItemRequestShortDto itemRequestShortDto = new ItemRequestShortDto(1, "itemRequestName", 1);
         ItemRequest itemRequest = new ItemRequest(1, "request description", user1,
                 LocalDateTime.now().withNano(0));
         ItemRequestDtoWithAnswer itemRequestDtoWithAnswer = new ItemRequestDtoWithAnswer(
                 1, "request description",
                 LocalDateTime.now().withNano(0),
-                List.of(itemDtoRequest));
+                List.of(itemRequestShortDto));
         doNothing().when(userService).checkUserExist(userId);
         when(itemRequestRepository.getRequestsForUser(userId)).thenReturn(List.of(itemRequest));
         when(itemRepository.findByRequest(itemId)).thenReturn(List.of(item1));
@@ -89,14 +89,14 @@ class ItemRequestServiceImplTest {
         int requestId = 1;
         User user1 = new User(1, "user1Name", "email1@mail.ru");
         Item item1 = new Item(1, "itemRequestName", "item1Description", true, user1, 1);
-        ItemDtoRequest itemDtoRequest = new ItemDtoRequest(1, "itemRequestName", 1);
+        ItemRequestShortDto itemRequestShortDto = new ItemRequestShortDto(1, "itemRequestName", 1);
 
         ItemRequest itemRequest = new ItemRequest(1, "request description", user1,
                 LocalDateTime.now().withNano(0));
         ItemRequestDtoWithAnswer itemRequestDtoWithAnswer = new ItemRequestDtoWithAnswer(
                 1, "request description",
                 LocalDateTime.now().withNano(0),
-                List.of(itemDtoRequest));
+                List.of(itemRequestShortDto));
 
         when(itemRequestRepository.getReferenceById(requestId)).thenReturn(itemRequest);
         when(itemRepository.findByRequest(itemId)).thenReturn(List.of(item1));

@@ -9,7 +9,7 @@ import ru.practicum.shareit.booking.Status;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.ItemDtoBooking;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -61,7 +61,7 @@ class ItemServiceImplAuxiliaryTest {
                 LocalDateTime.of(2024, 11, 20, 11, 1, 1));
 
 
-        ItemDtoBooking itemDtoBooking = new ItemDtoBooking(1, "item1Name",
+        ItemBookingDto itemBookingDto = new ItemBookingDto(1, "item1Name",
                 "item1Description",
                 true, 0,
                 lastBookingDto,
@@ -75,7 +75,7 @@ class ItemServiceImplAuxiliaryTest {
 
         when(itemRepository.getReferenceById(itemId)).thenReturn(item1);
 
-        ItemDtoBooking returnedItemDtoBooking = itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, commentsDto);
-        assertEquals(itemDtoBooking, returnedItemDtoBooking);
+        ItemBookingDto returnedItemBookingDto = itemServiceAuxiliary.createBookingForItem(itemId, itemBookings, commentsDto);
+        assertEquals(itemBookingDto, returnedItemBookingDto);
     }
 }

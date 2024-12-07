@@ -36,8 +36,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item updateItem(int userId, int itemId, ItemCreateDto itemCreateDto) {
-        Item itemForUpdate = ItemMapper.toItemModel(itemCreateDto);
+    public Item updateItem(int userId, int itemId, ItemUpdateDto itemUpdateDto) {
+        Item itemForUpdate = ItemMapper.toItemModel(itemUpdateDto);
         userService.checkUserExist(userId);
         checkItemExist(itemId);
         Item item = checkItemForUser(userId, itemId);
@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoBooking getItemByIdAndUserId(int userId, int itemId) {
+    public ItemBookingDto getItemByIdAndUserId(int userId, int itemId) {
         Collection<Booking> itemBookings = bookingRepository.getBookingForItem(itemId, userId);
         Collection<Comment> comments = commentRepository.findByItem(getItemById(itemId));
         Collection<CommentDto> commentsDto = new ArrayList<>();
@@ -79,22 +79,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemDtoBooking> getItemsForUser(int userId) {
+    public Collection<ItemBookingDto> getItemsForUser(int userId) {
         userService.checkUserExist(userId);
         Collection<Item> items = itemRepository.findByOwner(userService.getUserById(userId));
-        Collection<ItemDtoBooking> itemDtoBookings = new ArrayList<>();
+        Collection<ItemBookingDto> itemBookingDtos = new ArrayList<>();
         for (Item item : items) {
             Collection<Comment> comments = commentRepository.findByItem(item);
             Collection<CommentDto> commentsDto = new ArrayList<>();
             for (Comment comment : comments) {
                 commentsDto.add(CommentMapper.toCommentDto(comment));
             }
-            ItemDtoBooking itemDtoBooking = itemServiceAuxiliary.createBookingForItem(item.getId(),
+            ItemBookingDto itemBookingDto = itemServiceAuxiliary.createBookingForItem(item.getId(),
                     bookingRepository.getBookingForItem(item.getId(), userId), commentsDto
             );
-            itemDtoBookings.add(itemDtoBooking);
+            itemBookingDtos.add(itemBookingDto);
         }
-        return itemDtoBookings;
+        return itemBookingDtos;
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
@@ -31,11 +32,13 @@ class UserControllerIT {
     @Autowired
     MockMvc mvc;
     UserCreateDto userCreateDto;
+    UserUpdateDto userUpdateDto;
     User user;
 
     @BeforeEach
     void setUp() {
         userCreateDto = new UserCreateDto("userName", "email@mail.ru");
+        userUpdateDto = new UserUpdateDto("userName", "email@mail.ru");
         user = new User(1, "userName", "email@mail.ru");
     }
 
@@ -57,7 +60,7 @@ class UserControllerIT {
     void updateUser() throws Exception {
         int userId = 1;
         User updatedUser = new User(1, "userNameUpdated", "emailUpdated@mail.ru");
-        when(userService.updateUser(userId, userCreateDto)).thenReturn(updatedUser);
+        when(userService.updateUser(userId, userUpdateDto)).thenReturn(updatedUser);
         mvc.perform(patch("/users/{userId}", userId)
                         .content(mapper.writeValueAsString(userCreateDto))
                         .characterEncoding(StandardCharsets.UTF_8)

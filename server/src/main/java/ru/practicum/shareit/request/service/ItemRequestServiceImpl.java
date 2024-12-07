@@ -2,7 +2,7 @@ package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dto.ItemDtoRequest;
+import ru.practicum.shareit.request.dto.ItemRequestShortDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -42,11 +42,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
         for (ItemRequest itemRequest : itemRequestsArray) {
             Collection<Item> items = itemRepository.findByRequest(itemRequest.getId());
-            Collection<ItemDtoRequest> itemDtoRequests = new ArrayList<>();
+            Collection<ItemRequestShortDto> itemRequestShortDtos = new ArrayList<>();
             for (Item itemElement : items) {
-                itemDtoRequests.add(ItemMapper.toItemDtoRequest(itemElement));
+                itemRequestShortDtos.add(ItemMapper.toItemDtoRequest(itemElement));
             }
-            itemRequestDtoWithAnswers.add(ItemRequestMapper.toItemRequestDtoWithAnswer(itemRequest, itemDtoRequests));
+            itemRequestDtoWithAnswers.add(ItemRequestMapper.toItemRequestDtoWithAnswer(itemRequest, itemRequestShortDtos));
 
         }
         return itemRequestDtoWithAnswers;
@@ -61,11 +61,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public ItemRequestDtoWithAnswer getRequestData(int requestId) {
         ItemRequest itemRequest = itemRequestRepository.getReferenceById(requestId);
         Collection<Item> items = itemRepository.findByRequest(itemRequest.getId());
-        Collection<ItemDtoRequest> itemDtoRequests = new ArrayList<>();
+        Collection<ItemRequestShortDto> itemRequestShortDtos = new ArrayList<>();
         for (Item itemElement : items) {
-            itemDtoRequests.add(ItemMapper.toItemDtoRequest(itemElement));
+            itemRequestShortDtos.add(ItemMapper.toItemDtoRequest(itemElement));
         }
-        return ItemRequestMapper.toItemRequestDtoWithAnswer(itemRequest, itemDtoRequests);
+        return ItemRequestMapper.toItemRequestDtoWithAnswer(itemRequest, itemRequestShortDtos);
     }
 
 }
