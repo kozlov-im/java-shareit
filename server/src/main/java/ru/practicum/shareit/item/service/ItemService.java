@@ -1,0 +1,27 @@
+package ru.practicum.shareit.item.service;
+
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Item;
+
+import java.util.Collection;
+
+public interface ItemService {
+
+    Item createItem(int userId, ItemCreateDto itemCreateDto);
+
+    Item updateItem(int userId, int itemId, ItemUpdateDto itemUpdateDto);
+
+    Item getItemById(int itemId);
+
+    ItemBookingDto getItemByIdAndUserId(int userId, int itemId);
+
+    Collection<ItemBookingDto> getItemsForUser(int userId);
+
+    Collection<Item> searchItems(String text);
+
+    void checkItemExist(int itemId);
+
+    void checkItemAvailable(int itemId);
+
+    CommentDto addComment(int userId, int itemId, CommentCreateDto comment);
+}
